@@ -1,0 +1,9 @@
+{
+    "intents": [
+    {
+        "tag": "saluto",
+        "patterns": ["ciao","salve","buondì", "buongiorno", "saluti", "ave", "hei", "ei", "buonsalve"],
+        "risposte": ["Ciao!", "Salve!", "Operativo!", "Eccomi qui!", "Sistema avviato"]
+    }
+]
+}
