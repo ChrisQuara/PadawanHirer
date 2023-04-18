@@ -1,0 +1,34 @@
+Modifiche: 
+	-Se le domande sono taggate fare una funzione di estrazione delle domande che prenda in input il tag, per evitare
+	 di dover definire tante funzioni di estrazione quanti sono i tag.
+_____
+Domande:
+		-Ha senso rappresentare i frame con varie librerie (come framenet) oppure implementare noi una libreria ad hoc semplificata
+		 per utilizzarli?
+
+		-Possono essere inserite varie tipologie di domande, quali potrebbero essere rilevanti?
+
+
+_____
+
+1) Punteggio
+		-Ogni i-esima domanda ha un peso w(i) appartenente a [0,5]
+		-Lo score dell'i-esima domanda è definito in relazione al numero di slot da riempire rispetto al suo frame di riferimento.
+		 In particolare se la domanda è d, il suo frame è frame_d, il numero di slot del frame è num_slot_frame_d, e il numero di slot
+		 riempiti correttamente è right_slot_frame_d
+		 allora la funzione che calcola il punteggio è:
+		 			score(d){ 
+		 					  0 se  (right_slot_frame_d/num_slot_frame_d)/2 < 1/2
+		 					  w(d) altrimenti
+		 					}
+		-Lo score totale S_tot è calcolato da una funzione f_tot che considera in input la lista degli score di tutte le domande poste precedentemente:
+				0 <= f_tot(d1, ..., dn) = [(score(d1)+...+score(dn))/(w(1)+...+w(n))] <= 1
+		-L'utente passa solo se f_tot >= 0.7
+		-Generazione del commento relativo al punteggio
+
+2) Selezione delle domande:
+		- Il numero di domande è 8 e la somma dei pesi delle domande estratte deve essere >= 20 [2.5*8]
+3) Start
+		-Possibili start casuali
+
+
