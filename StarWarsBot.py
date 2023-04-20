@@ -59,11 +59,10 @@ def extractQuestions(number_of_questions, avg_weighted_sum):
             admissible_questions = QuestionManager.getExplicitQuestionsWithWeightCriteria(questions, (
                 lambda x: x >= avg_weighted_sum))
             if admissible_questions.__len__() > 0:
-                question_extracted = admissible_questions[random.randint(0, admissible_questions.__len__() - 1)]
+                question_extracted = random.choice(admissible_questions)
 
         else:
-            questions_to_extract = [question for question in questions if
-                                    ((last_extracted_weight + question.weight) / 2) >= avg_weighted_sum]
+            questions_to_extract = QuestionManager.getExplicitQuestionsWithWeightCriteria(questions, (lambda x: x >= 2*avg_weighted_sum-last_extracted_weight))
             if questions_to_extract.__len__() > 0:
                 question_extracted = QuestionManager.getComparisonWeightQuestion(questions_to_extract,
                                                                                  (lambda x, y: x < y))
