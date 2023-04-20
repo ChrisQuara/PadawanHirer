@@ -36,7 +36,7 @@ _____
 		--Criterio di estrazione TAG: Casuale
 		--Criterio di estrazione Peso: 
 		 	Se è la prima domanda: scegli un peso casuale
-		 	Altrimenti se la domanda precedente è stato scelto un peso non casuale: scegli un peso casuale
+		 	Altrimenti se la domanda precedente è stato scelto un peso non casuale: scegli un peso casuale >= 2.5
 		 	Altrimenti se la domanda precedente è stato scelto un peso casuale wi: scegli un peso uguale a 5 - wi,
 		 	   se non c'è una domanda con peso (5-wi) allora scegli il peso più piccolo possibile wi+1 tale che 
 		 	   wi+1 > (5-wi).
