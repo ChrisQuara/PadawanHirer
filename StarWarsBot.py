@@ -44,13 +44,6 @@ def getCategoriesToAdd(number_of_questions):
     return categories_to_add
 
 
-def getHighestWeightQuestion(questions):
-    lowest_question = questions[0]
-    for question in questions:
-        if question.weight > lowest_question.weight: lowest_question = question
-    return lowest_question
-
-
 def extractQuestions(number_of_questions, avg_weighted_sum):
     questions = manager.getQuestions()
     questions_extracted = []
@@ -86,6 +79,7 @@ def extractQuestions(number_of_questions, avg_weighted_sum):
 
     return questions_extracted
 
+
 # __________________tests__________________
 def testQuestionExtraction():
     manager.addCategory("jedi basics")
@@ -115,5 +109,6 @@ def testQuestionExtraction():
     print("]")
     print("AvgWeightedSumOfQuestions:" + str(AvgWeightedSumOfQuestions(questions)))
     print("Score (per il momento deve dare sempre 1):" + str(getQuestionsScore(questions)))
+
 
 testQuestionExtraction()
