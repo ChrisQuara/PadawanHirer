@@ -4,7 +4,7 @@ Modifiche:
 _____
 Domande:
 		-Ha senso rappresentare i frame con varie librerie (come framenet) oppure implementare noi una libreria ad hoc semplificata
-		 per utilizzarli?
+		 per utilizzarli?: Dopo alcune ricerche proporrei di creare una struttura dati molto semplice senza complicare il progetto
 
 		-Possono essere inserite varie tipologie di domande, quali potrebbero essere rilevanti?
 
@@ -22,12 +22,28 @@ _____
 		 					  w(d) altrimenti
 		 					}
 		-Lo score totale S_tot è calcolato da una funzione f_tot che considera in input la lista degli score di tutte le domande poste precedentemente:
-				0 <= f_tot(d1, ..., dn) = [(score(d1)+...+score(dn))/(w(1)+...+w(n))] <= 1
+				0 <= f_tot(d1, ..., dn) = [(score(d1)+...+score(dn))/(w(d1)+...+w(dn))] <= 1
 		-L'utente passa solo se f_tot >= 0.7
 		-Generazione del commento relativo al punteggio
 
 2) Selezione delle domande:
 		- Il numero di domande è 8 e la somma dei pesi delle domande estratte deve essere >= 20 [2.5*8]
+		--Criterio di estrazione categoria domanda: 
+			---Se dobbiamo disporre tra numero minimo di domande n e c categorie , con c <= d, allora per le domande della categoria i-esima (D_Ci): 
+			   |D_Ci| = Divisione_intera(numeratore: n, denominatore: |c|)
+			   Inoltre se i<=Resto(numeratore: n, denominatore: |c|) allora |D_Ci| = |D_Ci| + 1
+			- Date le cardinalità l'ordine di estrazione è casuale
+		--Criterio di estrazione TAG: Casuale
+		--Criterio di estrazione Peso: 
+		 	Se è la prima domanda: scegli un peso casuale
+		 	Altrimenti se la domanda precedente è stato scelto un peso non casuale: scegli un peso casuale
+		 	Altrimenti se la domanda precedente è stato scelto un peso casuale wi: scegli un peso uguale a 5 - wi,
+		 	   se non c'è una domanda con peso (5-wi) allora scegli il peso più piccolo possibile wi+1 tale che 
+		 	   wi+1 > (5-wi).
+		 	   Se non esiste un peso (wi+1) > (5-wi) scegli il più grande disponibile.  
+
+		--Criterio di estrazione Domanda
+			-Casuale tra le disponibili
 3) Start
 		-Possibili start casuali
 
