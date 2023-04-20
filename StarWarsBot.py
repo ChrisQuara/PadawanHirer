@@ -59,25 +59,21 @@ def extractQuestions(number_of_questions, avg_weighted_sum):
     last_extracted_weight = 1
     questions_added = 0
     while questions_added < number_of_questions:
+        question_extracted = question_extracted = QuestionManager.getComparisonWeightQuestion(questions,
+                                                                                              (lambda x,
+                                                                                                      y: x > y))
         if questions_added % 2 == 0:
             admissible_questions = QuestionManager.getExplicitQuestionsWithWeightCriteria(questions, (
                 lambda x: x >= avg_weighted_sum))
             if admissible_questions.__len__() > 0:
                 question_extracted = admissible_questions[random.randint(0, admissible_questions.__len__() - 1)]
-            else:
-                question_extracted = question_extracted = QuestionManager.getComparisonWeightQuestion(questions,
-                                                                                                      (lambda x,
-                                                                                                              y: x > y))
+
         else:
             questions_to_extract = [question for question in questions if
                                     ((last_extracted_weight + question.weight) / 2) >= avg_weighted_sum]
             if questions_to_extract.__len__() > 0:
                 question_extracted = QuestionManager.getComparisonWeightQuestion(questions_to_extract,
                                                                                  (lambda x, y: x < y))
-            else:
-                question_extracted = question_extracted = QuestionManager.getComparisonWeightQuestion(questions,
-                                                                                                      (lambda x,
-                                                                                                              y: x > y))
 
         if categories_to_add[manager.getIndexCategory(question_extracted.category)] > 0:
             questions_added += 1
