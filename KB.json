@@ -1,9 +1,34 @@
 {
-    "intents": [
-    {
-        "tag": "saluto",
-        "patterns": ["ciao","salve","buondì", "buongiorno", "saluti", "ave", "hei", "ei", "buonsalve"],
-        "risposte": ["Ciao!", "Salve!", "Operativo!", "Eccomi qui!", "Sistema avviato"]
-    }
-]
+    "jedi basics": [
+        "force",
+        "knowledge",
+        "self-discipline"
+    ],
+    "jedi code": [
+        "peace",
+        "armony",
+        "serendipity"
+    ],
+    "jedi hierarchy": [
+        "initiate",
+        "padawan",
+        "knight",
+        "master"
+    ],
+    "sith":[
+        "dark",
+        "side",
+        "force",
+        "passions",
+        "good",
+        "way",
+        "myself",
+        "sith"
+    ],
+        "the force": [
+        "living",
+        "unifying",
+        "energy",
+        "field"
+    ]
 }

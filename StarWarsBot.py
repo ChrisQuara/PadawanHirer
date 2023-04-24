@@ -1,4 +1,4 @@
-import random
+import random,json
 
 from QuestionManager import QuestionManager
 from Question import Question
@@ -81,6 +81,7 @@ def extractQuestions(number_of_questions, avg_weighted_sum):
 
 # __________________tests__________________
 def testQuestionExtraction():
+
     manager.addCategory("jedi basics")
     manager.addCategory("sith")
     manager.addCategory("the force")
@@ -109,5 +110,32 @@ def testQuestionExtraction():
     print("AvgWeightedSumOfQuestions:" + str(AvgWeightedSumOfQuestions(questions)))
     print("Score (per il momento deve dare sempre 1):" + str(getQuestionsScore(questions)))
 
+#_____________________Main______________________
+def knowledgebuilder():
+    kb = json.load(open("KB.json"))
+    return kb
 
-testQuestionExtraction()
+manager = QuestionManager.instance()
+data = knowledgebuilder()
+frame = {}
+common_ground = ""
+categories = list(data.keys())
+n_questions = list(range(0, len(categories)))
+for category, answers in data.items():
+    manager.addCategory(category)
+    answers = list(answers)
+    manager.addQuestion(Question(category, 5, answers))
+
+
+def main():
+    print("saluto")
+    questions = extractQuestions(5, 2.5)
+    print("[")
+    for question in questions:
+        print(question.toString())
+    print("]")
+    print("AvgWeightedSumOfQuestions:" + str(AvgWeightedSumOfQuestions(questions)))
+    print("Score (per il momento deve dare sempre 1):" + str(getQuestionsScore(questions)))
+    
+main()
+
