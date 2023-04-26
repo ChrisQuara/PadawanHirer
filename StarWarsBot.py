@@ -78,7 +78,6 @@ def extractQuestions(number_of_questions, avg_weighted_sum):
 
     return questions_extracted
 
-
 # __________________tests__________________
 def testQuestionExtraction():
 
@@ -118,21 +117,28 @@ def knowledgebuilder():
 manager = QuestionManager.instance()
 data = knowledgebuilder()
 frame = {}
-common_ground = ""
-categories = list(data.keys())
-n_questions = list(range(0, len(categories)))
 for category, answers in data.items():
     manager.addCategory(category)
     answers = list(answers)
     manager.addQuestion(Question(category, 5, answers))
+    manager.addQuestion(Question(category, 3, random.choice(answers)))
+    bool_answer = ["yes", "no"] 
+    manager.addQuestion(Question(category, 2, random.choice(bool_answer)))
+
+def create_f(q):
+        frame["category"] = q.category
+        for responses in q.responses:
+            frame[responses] = False
+        return frame
 
 
 def main():
-    print("saluto")
-    questions = extractQuestions(5, 2.5)
+    print("Saluto")
+    questions = extractQuestions(3, 2.5)
     print("[")
     for question in questions:
-        print(question.toString())
+        create_f(question)
+        user_ans = input().lower()
     print("]")
     print("AvgWeightedSumOfQuestions:" + str(AvgWeightedSumOfQuestions(questions)))
     print("Score (per il momento deve dare sempre 1):" + str(getQuestionsScore(questions)))
