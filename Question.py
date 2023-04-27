@@ -1,6 +1,7 @@
 from abc import abstractmethod
 from word2number import w2n
 import random
+from NLGFunctions import *
 
 
 def getNumber(phrase):
@@ -59,7 +60,7 @@ class Question:
         pass
 
     @abstractmethod
-    def askTheQuestion(self):
+    def getTheQuestion(self):
         pass
 
     def toString(self):
@@ -87,9 +88,8 @@ class QuestionSpecifyAllElements(Question):
             self.score = 0
         return self.score
 
-    def askTheQuestion(self):
-        print("Elenca tutte gli elementi della categoria '" + str(self.category) + "':")
-        return "Da implementare"
+    def getTheQuestion(self):
+        return SpecifyAllElements(self.category)
 
 
 class QuestionEnumerateElements(Question):
@@ -132,9 +132,8 @@ class QuestionEnumerateElements(Question):
                 pass
         return number
 
-    def askTheQuestion(self):
-        print("Quanti elementi contiene la categoria '" + str(self.category) + "':")
-        return "Da implementare"
+    def getTheQuestion(self):
+        return EnumerateAllElements(self.category)
 
 
 class QuestionYesOrNo(Question):
@@ -186,9 +185,5 @@ class QuestionYesOrNo(Question):
             self.score = 0
             return 0
 
-    def askTheQuestion(self):
-        negate = ""
-        if self.negation:
-            negate = " non "
-        print("E' vero che '" + self.elementToAsk + "'" + negate + "è membro della categoria '" + self.category + "':")
-        return "Da implementare"
+    def getTheQuestion(self):
+        return ContainingYesOrNo(self.category, self.elementToAsk, self.negation)
