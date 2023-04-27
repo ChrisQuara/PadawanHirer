@@ -88,12 +88,16 @@ class QuestionYesOrNo(Question):
 
     def getScore(self, response):
         self.isPartiallyCorrect = False
-        if response.__len__() > 1:
-            raise Exception("The list contains more than one element")
-        response = response[0].lower()
-
-        if response != "yes" and response != "no":
-            raise Exception("The response is not 'yes' or 'no'")
+        if response.count("yes") > 0:
+            if response.count("no") > 0:
+                raise Exception("The list contains both yes and no")
+            response = "yes"
+        elif response.count("no") > 0:
+            if response.count("yes") > 0:
+                raise Exception("The list contains both yes and no")
+            response = "no"
+        else:
+            raise Exception("The list does not contains yes or no")
 
         if (response.lower() == "yes" and not self.negation) or (response.lower() == "no" and self.negation):
             for element in self.responses:
