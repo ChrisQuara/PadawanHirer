@@ -1,9 +1,11 @@
-import random,json
+import json
+import random
+import Question
+import QuestionManager
+from nltk.tokenize import MWETokenizer, word_tokenize
 
-from QuestionManager import QuestionManager
-from Question import Question
-
-manager = QuestionManager.instance()
+manager = QuestionManager.QuestionManager.instance()
+tokenizer = MWETokenizer()
 
 
 def AvgWeightedSumOfQuestions(questions):
@@ -17,7 +19,7 @@ def getQuestionsScore(questions):
     total_scores = 0
     total_weights = 0
     for question in questions:
-        total_scores += question.getScore()
+        total_scores += question.score
         total_weights += question.weight
     return total_scores / total_weights
 
@@ -52,20 +54,21 @@ def extractQuestions(number_of_questions, avg_weighted_sum):
     last_extracted_weight = 1
     questions_added = 0
     while questions_added < number_of_questions:
-        question_extracted = question_extracted = QuestionManager.getComparisonWeightQuestion(questions,
-                                                                                              (lambda x,
-                                                                                                      y: x > y))
+        question_extracted = question_extracted = QuestionManager.QuestionManager.getComparisonWeightQuestion(questions,
+                                                                                                              (lambda x,
+                                                                                                                      y: x > y))
         if questions_added % 2 == 0:
-            admissible_questions = QuestionManager.getExplicitQuestionsWithWeightCriteria(questions, (
+            admissible_questions = QuestionManager.QuestionManager.getExplicitQuestionsWithWeightCriteria(questions, (
                 lambda x: x >= avg_weighted_sum))
             if admissible_questions.__len__() > 0:
                 question_extracted = random.choice(admissible_questions)
 
         else:
-            questions_to_extract = QuestionManager.getExplicitQuestionsWithWeightCriteria(questions, (lambda x: x >= 2*avg_weighted_sum-last_extracted_weight))
+            questions_to_extract = QuestionManager.QuestionManager.getExplicitQuestionsWithWeightCriteria(questions, (
+                lambda x: x >= 2 * avg_weighted_sum - last_extracted_weight))
             if questions_to_extract.__len__() > 0:
-                question_extracted = QuestionManager.getComparisonWeightQuestion(questions_to_extract,
-                                                                                 (lambda x, y: x < y))
+                question_extracted = QuestionManager.QuestionManager.getComparisonWeightQuestion(questions_to_extract,
+                                                                                                 (lambda x, y: x < y))
 
         if categories_to_add[manager.getIndexCategory(question_extracted.category)] > 0:
             questions_added += 1
@@ -78,70 +81,59 @@ def extractQuestions(number_of_questions, avg_weighted_sum):
 
     return questions_extracted
 
-# __________________tests__________________
-def testQuestionExtraction():
 
-    manager.addCategory("jedi basics")
-    manager.addCategory("sith")
-    manager.addCategory("the force")
+def generateQuestions():
+    data = json.load(open("KB.json"))
+    all_possible_responses = []
+    for category, answers in data.items():
+        all_possible_responses += answers
 
-    manager.addQuestion(Question("jedi basics", 5, "1"))
-    manager.addQuestion(Question("jedi basics", 4, "2"))
-    manager.addQuestion(Question("jedi basics", 3, "3"))
-    manager.addQuestion(Question("jedi basics", 2, "4"))
-    manager.addQuestion(Question("jedi basics", 1, "5"))
+    for category, answers in data.items():
+        manager.addCategory(category)
+        answers = list(answers)
+        manager.addQuestion(Question.QuestionSpecifyAllElements(category, answers))
+        manager.addQuestion(Question.QuestionEnumerateElements(category, answers))
+        manager.addQuestion(Question.QuestionYesOrNo(category, answers, all_possible_responses))
 
-    manager.addQuestion(Question("sith", 5, "6"))
-    manager.addQuestion(Question("sith", 4, "7"))
-    manager.addQuestion(Question("sith", 2, "8"))
-    manager.addQuestion(Question("sith", 1, "9"))
 
-    manager.addQuestion(Question("the force", 5, "10"))
-    manager.addQuestion(Question("the force", 4, "11"))
-    manager.addQuestion(Question("the force", 3, "12"))
-
-    questions = extractQuestions(8, 2.5)
-
-    print("[")
-    for question in questions:
-        print(question.toString())
-    print("]")
-    print("AvgWeightedSumOfQuestions:" + str(AvgWeightedSumOfQuestions(questions)))
-    print("Score (per il momento deve dare sempre 1):" + str(getQuestionsScore(questions)))
-
-#_____________________Main______________________
-def knowledgebuilder():
-    kb = json.load(open("KB.json"))
-    return kb
-
-manager = QuestionManager.instance()
-data = knowledgebuilder()
-frame = {}
-for category, answers in data.items():
-    manager.addCategory(category)
-    answers = list(answers)
-    manager.addQuestion(Question(category, 5, answers))
-    manager.addQuestion(Question(category, 3, random.choice(answers)))
-    bool_answer = ["yes", "no"] 
-    manager.addQuestion(Question(category, 2, random.choice(bool_answer)))
-
-def create_f(q):
-        frame["category"] = q.category
-        for responses in q.responses:
-            frame[responses] = False
-        return frame
+'''def create_f(q):
+    frame["category"] = q.category
+    for responses in q.responses:
+        frame[responses] = False
+    return frame'''
 
 
 def main():
     print("Saluto")
+    generateQuestions()
     questions = extractQuestions(3, 2.5)
-    print("[")
     for question in questions:
-        create_f(question)
-        user_ans = input().lower()
-    print("]")
-    print("AvgWeightedSumOfQuestions:" + str(AvgWeightedSumOfQuestions(questions)))
-    print("Score (per il momento deve dare sempre 1):" + str(getQuestionsScore(questions)))
-    
-main()
+        counter = 0
+        loop = True
+        while loop and counter < question.maxAttempt:
+            question.askTheQuestion()
+            user_ans = tokenizer.tokenize(word_tokenize(input().lower()))
+            print(user_ans)
+            try:
+                score = question.getScore(user_ans)
+                counter += 1
+                if score > 0:
+                    print("Messaggio di successo")
+                    loop = False
+                elif question.isPartiallyCorrect:
+                    print("Messaggio di fallimento parziale")
+                else:
+                    print("Messaggio di fallimento")
 
+            except:
+                print("Messaggio di errore input")
+                loop = True
+                counter += 1
+        if loop:
+            print("Messaggio di fallimento conclusivo")
+
+    print("AvgWeightedSumOfQuestions:" + str(AvgWeightedSumOfQuestions(questions)))
+    print("Score finale:" + str(getQuestionsScore(questions)))
+
+
+main()
