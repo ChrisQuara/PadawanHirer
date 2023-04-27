@@ -1,5 +1,3 @@
-from Question import Question
-
 
 class QuestionManager:
     _instance = None
@@ -50,6 +48,12 @@ class QuestionManager:
 
     def getQuestionsWithCategoryCriteria(self, criteria):
         return [question for question in self.questions if criteria(question.category)]
+
+    def getAllResponses(self):
+        to_return = []
+        for question in self.questions:
+            to_return += question.responses
+        return to_return
 
     @staticmethod
     def getExplicitQuestionsWithCategoryCriteria(questions, criteria):
