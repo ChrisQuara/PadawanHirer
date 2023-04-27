@@ -145,7 +145,14 @@ class QuestionYesOrNo(Question):
         super().__init__(category, real_responses)
         self.weight = 2
         self.negation = random.choice([True, False])
-        self.elementToAsk = random.choice(possible_responses)
+        difference = list(set(possible_responses) - set(real_responses))
+        if random.choice([True, False]):
+            self.elementToAsk = random.choice(real_responses)
+        else:
+            self.elementToAsk = random.choice(difference)
+
+
+
 
     def getScore(self, response):
         self.isPartiallyCorrect = False
