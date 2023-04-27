@@ -1,5 +1,45 @@
 from abc import abstractmethod
+from word2number import w2n
 import random
+
+
+def getNumber(phrase):
+    number = None
+
+    if phrase.__len__() == 0:
+        return None
+    elif phrase.__len__() == 1:
+        try:
+            number = w2n.word_to_num(phrase[0])
+            return number
+        except:
+            return None
+
+    for index in range(0, phrase.__len__() - 1):
+        first_num = None
+        second_num = None
+        try:
+            first_num = w2n.word_to_num(phrase[index])
+            if number is None:
+                number = first_num
+            else:
+                return "more_than_one_number"
+            second_num = w2n.word_to_num(phrase[index + 1])
+            return "composite_number"
+        except:
+            if number is not None and second_num is not None:
+                return "composite_number"
+
+    try:
+        first_num = w2n.word_to_num(phrase[phrase.__len__() - 1])
+        if number is None:
+            number = first_num
+        else:
+            return "more_than_one_number"
+    except:
+        pass
+
+    return number
 
 
 class Question:
@@ -59,10 +99,16 @@ class QuestionEnumerateElements(Question):
 
     def getScore(self, number_of_elements):
         self.isPartiallyCorrect = False
-        if number_of_elements.__len__() > 1:
-            raise Exception("The list contains more than one element")
-        number_of_elements = int(number_of_elements[0])
         number_of_responses = self.responses.__len__()
+        number_of_elements = getNumber(number_of_elements)
+        if number_of_elements is None:
+            raise Exception("There isn't a number")
+        elif number_of_elements == "more_than_one_number":
+            raise Exception("Too many numbers")
+        elif number_of_elements == "composite_number":
+            self.score = 0
+            return 0
+
         if number_of_elements >= 2 * number_of_responses or number_of_elements <= 0:
             self.score = 0
         else:
@@ -70,6 +116,21 @@ class QuestionEnumerateElements(Question):
             self.score = round(
                 self.weight * (1 - (abs(number_of_responses - number_of_elements) / number_of_responses)))
         return self.score
+
+    def getNumber(self, phrase):
+        number = None
+        for index in range(0, phrase.__len__() - 2):
+            try:
+                temp = w2n.word_to_num(phrase[index])
+                if number == None:
+                    number = temp
+                else:
+                    return -1  # More than one number
+                temp = w2n.word_to_num(phrase[index + 1])
+                return -2  # composite number
+            except:
+                pass
+        return number
 
     def askTheQuestion(self):
         print("Quanti elementi contiene la categoria '" + str(self.category) + "':")
