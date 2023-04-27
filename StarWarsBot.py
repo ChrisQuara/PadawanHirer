@@ -3,6 +3,7 @@ import random
 import Question
 import QuestionManager
 from nltk.tokenize import MWETokenizer, word_tokenize
+from NLGFunctions import *
 
 manager = QuestionManager.QuestionManager.instance()
 tokenizer = MWETokenizer()
@@ -104,7 +105,10 @@ def generateQuestions():
 
 
 def main():
-    print("Saluto")
+    for sentence in PrimaFrase(random.choice([0, 1, 2])):
+        print(sentence)
+    name = input()
+    print("Well " + name + "...")
     generateQuestions()
     questions = extractQuestions(3, 2.5)
     for question in questions:
@@ -112,7 +116,7 @@ def main():
         counter_err = 0
         loop = True
         while loop and counter < question.maxAttempt and counter_err < 3:
-            question.askTheQuestion()
+            print(question.getTheQuestion())
             user_ans = tokenizer.tokenize(word_tokenize(input().lower()))
             print(user_ans)
             try:
