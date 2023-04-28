@@ -110,7 +110,7 @@ def main():
     name = input()
     print("Well " + name + "...")
     generateQuestions()
-    questions = extractQuestions(3, 2.5)
+    questions = extractQuestions(5, 2.5)
     for question in questions:
         counter = 0
         counter_err = 0
@@ -118,28 +118,22 @@ def main():
         while loop and counter < question.maxAttempt and counter_err < 3:
             print(question.getTheQuestion())
             user_ans = tokenizer.tokenize(word_tokenize(input().lower()))
-            print(user_ans)
             try:
                 score = question.getScore(user_ans)
                 counter += 1
+                print(correctAns(question, score))
                 if score > 0:
-                    print("Messaggio di successo")
                     loop = False
-                elif question.isPartiallyCorrect:
-                    print("Messaggio di fallimento parziale")
-                else:
-                    print("Messaggio di fallimento")
-
             except:
-                print("Messaggio di errore input")
+                print("Input error!")
                 loop = True
                 counter -= 1
                 counter_err += 1
         if loop:
-            print("Messaggio di fallimento conclusivo")
+            print(endquestioning())
 
     print("AvgWeightedSumOfQuestions:" + str(AvgWeightedSumOfQuestions(questions)))
-    print("Score finale:" + str(getQuestionsScore(questions)))
+    print(scorecomment(getQuestionsScore(questions)))
 
 
 main()
