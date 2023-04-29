@@ -123,15 +123,16 @@ def ContainingYesOrNo(category, element, negated):
     question_done = realiser.realiseSentence(p)
     return question_done
 
+
 def correctAns(question, score):
     p = nlgFactory.createClause()
     subj = nlgFactory.createNounPhrase("your answer")
     comp = ""
-    if score>0:
+    if score == question.weight:
         verb = nlgFactory.createVerbPhrase("be correct")
     elif question.isPartiallyCorrect:
         verb = nlgFactory.createVerbPhrase("be partially correct")
-        comp = nlgFactory.createStringElement(", tell me more about it")
+        #comp = nlgFactory.createStringElement(", tell me more about it")
     else:
         verb = nlgFactory.createVerbPhrase("be not correct")
     p.setSubject(subj)
@@ -139,6 +140,7 @@ def correctAns(question, score):
     p.setComplement(comp)
     reaction = realiser.realiseSentence(p)
     return reaction
+
 
 def endquestioning():
     react = nlgFactory.createClause("You", "exhausted", "my patience")
@@ -153,21 +155,11 @@ def endquestioning():
     return reaction
 
 
-#Ho solo implementato la parte in cui l'utente viene bocciato, non so nulla di star wars lol 
+# Ho solo implementato la parte in cui l'utente viene bocciato, non so nulla di star wars lol
 def scorecomment(score):
+    reaction = "Empty reaction"
     if score < 0.6:
-        p=nlgFactory.createClause("You", "are", "probably a true sith")
+        p = nlgFactory.createClause("You", "are", "probably a true sith")
         p.setPlural(True)
         reaction = realiser.realiseSentence(p)
     return reaction
-
-
-
-
-
-
-
-
-
-
-
