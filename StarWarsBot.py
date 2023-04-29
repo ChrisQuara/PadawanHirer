@@ -122,7 +122,7 @@ def main():
                 score = question.getScore(user_ans)
                 counter += 1
                 print(correctAns(question, score))
-                if score > 0:
+                if score == question.weight:
                     loop = False
             except:
                 print("Input error!")
