@@ -50,6 +50,7 @@ class Question:
     isPartiallyCorrect = False
     score = 0
     maxAttempt = 1
+    numberAttempt = 0
 
     def __init__(self, category, responses):
         self.category = category
@@ -89,7 +90,7 @@ class QuestionSpecifyAllElements(Question):
         return self.score
 
     def getTheQuestion(self):
-        return SpecifyAllElements(self.category)
+        return SpecifyAllElements(self.category, self.numberAttempt)
 
 
 class QuestionEnumerateElements(Question):
@@ -155,12 +156,12 @@ class QuestionYesOrNo(Question):
 
     def getScore(self, response):
         self.isPartiallyCorrect = False
-        if response.count("yes") > 0:
-            if response.count("no") > 0:
+        if response.count("yes") > 0 or response.count("true") > 0:
+            if response.count("no") > 0 or response.count("false") > 0:
                 raise Exception("The list contains both yes and no")
             response = "yes"
-        elif response.count("no") > 0:
-            if response.count("yes") > 0:
+        elif response.count("no") > 0 or response.count("false") > 0:
+            if response.count("yes") > 0 or response.count("true") > 0:
                 raise Exception("The list contains both yes and no")
             response = "no"
         else:
