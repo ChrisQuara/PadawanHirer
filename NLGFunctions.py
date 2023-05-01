@@ -3,6 +3,7 @@ from simplenlg.realiser.english import *
 from simplenlg.features import *
 from simplenlg.phrasespec import *
 import json
+import random
 
 lexicon = Lexicon.getDefaultLexicon()
 nlgFactory = NLGFactory(lexicon)
@@ -18,7 +19,9 @@ data = dizionario()'''
 
 
 def PrimaFrase(n):
-    if (n == 0):
+    n = [0, 1, 2]
+    m = random.choice(n)
+    if (m == 0):
         array = []
         phrase1 = nlgFactory.createClause()
         phrase1.setSubject("You")
@@ -40,7 +43,7 @@ def PrimaFrase(n):
         sentence = realiser.realiseSentence(phrase2)
         array.append(sentence)
         return array
-    elif (n == 1):
+    elif (m == 1):
         array = []
         phrase1 = nlgFactory.createClause()
         phrase1.setSubject("I")
@@ -57,7 +60,7 @@ def PrimaFrase(n):
         phrase2.addPostModifier(phrase3)
         array.append(realiser.realiseSentence(phrase2))
         return array
-    elif (n == 2):
+    elif (m == 2):
         array = []
         phrase1 = nlgFactory.createClause()
         phrase1.setSubject("I")
@@ -79,18 +82,121 @@ def PrimaFrase(n):
         return array
 
 
-def SpecifyAllElements(category):
-    p = nlgFactory.createClause()
-    p.setSubject("you")
-    p.setVerb("specify")
-    p.setFeature(Feature.MODAL, "can")
-    obj = nlgFactory.createNounPhrase(category)
-    preposition = nlgFactory.createPrepositionPhrase(preposition="about")
-    preposition.addComplement(obj)
-    p.addPostModifier(preposition)
-    p.setFeature(Feature.INTERROGATIVE_TYPE, InterrogativeType.WHAT_OBJECT)
-    question_done = realiser.realiseSentence(p)
-    return question_done
+def ResponseToInput(name):
+    array = []
+    if name == "luke":
+        p = nlgFactory.createClause()
+        subj = nlgFactory.createNounPhrase("Your name")
+        verb = nlgFactory.createVerbPhrase("suppose that")
+        obj = nlgFactory.createNounPhrase("the force")
+        subordinate = nlgFactory.createClause("is strong with you")
+        p.addFrontModifier("Nice Luke!")
+        p.setSubject(subj)
+        p.setVerb(verb)
+        p.setObject(obj)
+        p.addPostModifier(subordinate)
+        sentence = realiser.realiseSentence(p)
+        breath = nlgFactory.createClause("hhhhh...")
+        array.append(realiser.realiseSentence(breath))
+        array.append(sentence)
+        p2 = nlgFactory.createClause("like a perfect Skywalker...")
+        array.append(realiser.realiseSentence(p2))
+        return array
+    else:
+        n = [0, 1, 2]
+        m = random.choice(n)
+        if (m == 0):
+            p2 = nlgFactory.createClause()
+            p2.addFrontModifier("Mmm...")
+            p2.addFrontModifier(name)
+            p2.addPostModifier(",")
+            p2.setSubject("I")
+            p2.setVerb("be sure")
+            p2.setFeature(Feature.NEGATED, True)
+            prep = nlgFactory.createPrepositionPhrase("that you are good enough")
+            p2.addPostModifier(prep)
+            sentence2 = realiser.realiseSentence(p2)
+            breath = nlgFactory.createClause()
+            breath.addPreModifier("hhhhh...")
+            array.append(realiser.realiseSentence(breath))
+            array.append(sentence2)
+            p3 = nlgFactory.createClause("But... let's start!")
+            sentence3 = realiser.realiseSentence(p3)
+            array.append(sentence3)
+        elif (m == 1):
+            p = nlgFactory.createClause()
+            intro = nlgFactory.createNounPhrase("Well", name)
+            intro.addPostModifier("...")
+            p3 = realiser.realiseSentence(intro)
+            p.setSubject("you")
+            verb = nlgFactory.createVerbPhrase("be ready for the challenge")
+            p.setVerbPhrase(verb)
+            p.setFeature(Feature.INTERROGATIVE_TYPE, InterrogativeType.YES_NO)
+            sentence = realiser.realiseSentence(p)
+            p2 = nlgFactory.createClause("C'mon let's start! The Dark can't wait")
+            sentence2 = realiser.realiseSentence(p2)
+            array.append(p3)
+            array.append(sentence)
+            array.append(sentence2)
+        elif (m == 2):
+            p = nlgFactory.createClause()
+            p.addFrontModifier(name)
+            p.setSubject("you")
+            verb = nlgFactory.createVerbPhrase("be ready to test")
+            p.setVerbPhrase(verb)
+            p.setComplement("your Dark... sorry, competence")
+            p.setFeature(Feature.INTERROGATIVE_TYPE, InterrogativeType.YES_NO)
+            sentence = realiser.realiseSentence(p)
+            p2 = nlgFactory.createClause("C'mon let's start! The Dark can't wait")
+            sentence2 = realiser.realiseSentence(p2)
+            array.append(sentence)
+            array.append(sentence2)
+        return array
+
+
+def SpecifyAllElements(category, attempt):
+    array = []
+    if (attempt == 0):
+        p = nlgFactory.createClause()
+        p.setSubject("you")
+        p.setVerb("specify")
+        p.setFeature(Feature.MODAL, "can")
+        obj = nlgFactory.createNounPhrase(category)
+        preposition = nlgFactory.createPrepositionPhrase(preposition="about")
+        preposition.addComplement(obj)
+        p.addPostModifier(preposition)
+        p.setFeature(Feature.INTERROGATIVE_TYPE, InterrogativeType.WHAT_OBJECT)
+        question_done = realiser.realiseSentence(p)
+        breath = nlgFactory.createClause("Hhhhh...")
+        array.append(realiser.realiseSentence(breath))
+        array.append(question_done)
+        return array
+    elif (attempt == 1):
+        p1 = nlgFactory.createClause("I", "need", "more precision")
+        sentence = realiser.realiseSentence(p1)
+        array.append(sentence)
+        p = nlgFactory.createClause()
+        p.setSubject("you")
+        p.setVerb("specify")
+        p.setFeature(Feature.MODAL, "can")
+        obj = nlgFactory.createNounPhrase(category)
+        preposition = nlgFactory.createPrepositionPhrase(preposition="something else about")
+        preposition.addComplement(obj)
+        p.addPostModifier(preposition)
+        p.setFeature(Feature.INTERROGATIVE_TYPE, InterrogativeType.WHAT_OBJECT)
+        return array
+    elif (attempt == 2):
+        p = nlgFactory.createClause("This is not enough for me!")
+        sentence = realiser.realiseSentence(p)
+        breath = nlgFactory.createClause("Hhhhh...")
+        array.append(realiser.realiseSentence(breath))
+        array.append(sentence)
+        p1 = nlgFactory.createClause("say", "something about")
+        p1.addFrontModifier("Please,")
+        p1.setComplement(category)
+        sentence2 = realiser.realiseSentence(p1)
+        array.append(sentence2)
+        return array
 
 
 def EnumerateAllElements(category):
@@ -124,22 +230,102 @@ def ContainingYesOrNo(category, element, negated):
     return question_done
 
 
-def correctAns(question, score):
-    p = nlgFactory.createClause()
-    subj = nlgFactory.createNounPhrase("your answer")
-    comp = ""
-    if score == question.weight:
-        verb = nlgFactory.createVerbPhrase("be correct")
-    elif question.isPartiallyCorrect:
-        verb = nlgFactory.createVerbPhrase("be partially correct")
-        #comp = nlgFactory.createStringElement(", tell me more about it")
+# risposta di Darth Vader a domande che richiedono all'utente di rispondere Yes or No
+def ResponseToYesOrNo(category, question, score):
+    if (score == question.weight):  # risposta corretta
+        p = nlgFactory.createClause("The Force", "seems to be", "on your side")
+        p.addFrontModifier("Good!")
+        p.addPostModifier(",")
+        p2 = nlgFactory.createClause("you", "know", "something about")
+        p2.setPlural(True)
+        p.addPostModifier(p2)
+        p3 = nlgFactory.createNounPhrase(category)
+        p3.addPostModifier("...")
+        p2.addPostModifier(p3)
+        response_done = realiser.realiseSentence(p)
     else:
-        verb = nlgFactory.createVerbPhrase("be not correct")
-    p.setSubject(subj)
-    p.setVerbPhrase(verb)
-    p.setComplement(comp)
-    reaction = realiser.realiseSentence(p)
-    return reaction
+        p = nlgFactory.createClause("You", "be", "wrong!")
+        p.setPlural(True)
+        p.addFrontModifier("Damn!")
+        subj = nlgFactory.createNounPhrase("You")
+        subj.setFeature(Feature.ELIDED, True)
+        p2 = nlgFactory.createClause(subj, "Need to study more about")
+        p2.setPlural(True)
+        p2.addPostModifier(category)
+        p.addPostModifier(p2)
+        response_done = realiser.realiseSentence(p)
+    return response_done
+
+
+# dopo un tot di risposte "bad" generiamo casualmente una risposta cuscinetto
+def SafeQuestion(category):
+    subj = nlgFactory.createNounPhrase("You")
+    subj.setFeature(Feature.ELIDED, True)
+    p = nlgFactory.createClause(subj, "be", "focused")
+    p.setPlural(True)
+    p.setFeature(Feature.MODAL, "have to")
+    p.addPostModifier("we were talking about")
+    p.addPostModifier(category)
+    p.addPostModifier("wake up!")
+    sentence = nlgFactory.createClause(subj, p)
+    sentence1 = realiser.realiseSentence(sentence)
+    return sentence1
+
+
+# risposte per quando si risponde male a Darth Vader per 3 volte
+# se è maggiore di 3 chiamiamo la domanda "cuscinetto"  SafeQuestion
+def BadResponse(badInput, question):
+    if (badInput == 0):
+        array = []
+        p = nlgFactory.createClause()
+        p.setSubject("I")
+        verb = nlgFactory.createVerbPhrase("find your lack of faith disturbing...")
+        p.setVerbPhrase(verb)
+        array.append(realiser.realiseSentence(p))
+        breath = nlgFactory.createClause("Hhhhh...")
+        array.append(realiser.realiseSentence(breath))
+        p2 = nlgFactory.createClause("The light", "confuses you")
+        p2.setFeature(Feature.TENSE, Tense.PAST)
+        array.append(realiser.realiseSentence(p2))
+        p4 = nlgFactory.createClause("Try to say", "something good")
+        p4.setPlural(True)
+        p5 = nlgFactory.createClause("don't waste my time with your incompetence")
+        p6 = nlgFactory.createCoordinatedPhrase(p4, p5)
+        array.append(realiser.realiseSentence(p6))
+    elif (badInput == 1):
+        array = []
+        p = nlgFactory.createClause("Your lack of control", "is disturbing")
+        adv = nlgFactory.createAdverbPhrase("Very bad!")
+        p.addFrontModifier(adv)
+        array.append(realiser.realiseSentence(p))
+        breath = nlgFactory.createClause("Hhhhh...")
+        array.append(realiser.realiseSentence(breath))
+        p2 = nlgFactory.createClause("you", "don't know", "the power of Dark Side")
+        p2.addFrontModifier("Maybe")
+        p2.setPlural(True)
+        array.append(realiser.realiseSentence(p2))
+    elif (badInput == 2):
+        array = []
+        p = nlgFactory.createClause("You", "fail me", "yet again")
+        p.setFeature(Feature.TENSE, Tense.PAST)
+        array.append(realiser.realiseSentence(p))
+        breath = nlgFactory.createClause("Hhhhh...")
+        array.append(realiser.realiseSentence(breath))
+        p2 = nlgFactory.createClause("I", "tolerate", "such arrogance")
+        p2.setFeature(Feature.NEGATED, True)
+        p2.setFeature(Feature.MODAL, "can")
+        subordinate = nlgFactory.createNounPhrase("from a simple initiated rookie")
+        p2.addPostModifier(subordinate)
+        array.append(realiser.realiseSentence(p2))
+        p3 = nlgFactory.createClause("you", "wish experience", "the full power of the Dark Side")
+        p4 = nlgFactory.createVerbPhrase("feel the sting of my lightsaber")
+        p4.setPlural(True)
+        p3.addPostModifier("and")
+        p3.addPostModifier(p4)
+        p3.setFeature(Feature.INTERROGATIVE_TYPE, InterrogativeType.YES_NO)
+        array.append(realiser.realiseSentence(p3))
+        array.append(SafeQuestion(question.category))
+    return array
 
 
 def endquestioning():
@@ -155,7 +341,30 @@ def endquestioning():
     return reaction
 
 
-# Ho solo implementato la parte in cui l'utente viene bocciato, non so nulla di star wars lol
+def correctAns(question, score):
+    category = question.category
+    p = nlgFactory.createClause()
+    subj = nlgFactory.createNounPhrase("your answer")
+    comp = ""
+    if score == question.weight:
+        verb = nlgFactory.createVerbPhrase("be correct")
+        p2 = nlgFactory.createClause("let's go to another question")
+        p.addPostModifier(p2)
+    elif question.isPartiallyCorrect:
+        verb = nlgFactory.createVerbPhrase("be partially correct")
+        #p2 = nlgFactory.createClause("You", "know", "something else about")
+        #p2.addPostModifier(category)
+        #p.addPostModifier(p2)
+        # comp = nlgFactory.createStringElement(", tell me more about it")
+    else:
+        verb = nlgFactory.createVerbPhrase("be not correct")
+    p.setSubject(subj)
+    p.setVerbPhrase(verb)
+    p.setComplement(comp)
+    reaction = realiser.realiseSentence(p)
+    return reaction
+
+
 def scorecomment(score):
     reaction = "Empty reaction"
     if score < 0.6:
@@ -163,3 +372,28 @@ def scorecomment(score):
         p.setPlural(True)
         reaction = realiser.realiseSentence(p)
     return reaction
+
+
+'''p3 = nlgFactory.createClause("I", "to suppose")
+        p3.setFeature(Feature.MODAL, "have")
+        subordinate2 = nlgFactory.createClause("you", "be", "follower of Obi-Wan")
+        subordinate2.addFrontModifier("that")
+        p3.addPostModifier(subordinate2)
+        array.append(realiser.realiseSentence(p3))'''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
