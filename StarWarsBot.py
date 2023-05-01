@@ -97,42 +97,43 @@ def generateQuestions():
         manager.addQuestion(Question.QuestionYesOrNo(category, answers, all_possible_responses))
 
 
-'''def create_f(q):
-    frame["category"] = q.category
-    for responses in q.responses:
-        frame[responses] = False
-    return frame'''
+def printStringArray(element):
+    if type(element).__name__ == "str":
+        print(element)
+    else:
+        for string in element:
+            print(string)
 
 
 def main():
-    for sentence in PrimaFrase(random.choice([0, 1, 2])):
-        print(sentence)
+    printStringArray(PrimaFrase(random.choice([0, 1, 2])))
     name = input()
-    print("Well " + name + "...")
+    printStringArray(ResponseToInput(name.lower()))
+    print("")
     generateQuestions()
     questions = extractQuestions(5, 2.5)
     for question in questions:
-        counter = 0
         counter_err = 0
         loop = True
-        while loop and counter < question.maxAttempt and counter_err < 3:
-            print(question.getTheQuestion())
+        while loop and question.numberAttempt < question.maxAttempt and counter_err < 3:
+            printStringArray(question.getTheQuestion())
             user_ans = tokenizer.tokenize(word_tokenize(input().lower()))
             try:
                 score = question.getScore(user_ans)
-                counter += 1
-                print(correctAns(question, score))
+                question.numberAttempt += 1
+                printStringArray(correctAns(question, score))
                 if score == question.weight:
                     loop = False
+
             except:
-                print("Input error!")
+                printStringArray(BadResponse(counter_err, question))
                 loop = True
-                counter -= 1
+                question.numberAttempt -= 1
                 counter_err += 1
         if loop:
             print(endquestioning())
+        print("\n")
 
-    print("AvgWeightedSumOfQuestions:" + str(AvgWeightedSumOfQuestions(questions)))
     print(scorecomment(getQuestionsScore(questions)))
 
 
