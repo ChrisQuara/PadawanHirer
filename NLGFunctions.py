@@ -183,7 +183,9 @@ def SpecifyAllElements(category, attempt):
         preposition = nlgFactory.createPrepositionPhrase(preposition="something else about")
         preposition.addComplement(obj)
         p.addPostModifier(preposition)
-        p.setFeature(Feature.INTERROGATIVE_TYPE, InterrogativeType.WHAT_OBJECT)
+        p.setFeature(Feature.INTERROGATIVE_TYPE, InterrogativeType.YES_NO)
+        question_done = realiser.realiseSentence(p)
+        array.append(question_done)
         return array
     elif (attempt == 2):
         p = nlgFactory.createClause("This is not enough for me!")
@@ -231,8 +233,9 @@ def ContainingYesOrNo(category, element, negated):
 
 
 # risposta di Darth Vader a domande che richiedono all'utente di rispondere Yes or No
-def ResponseToYesOrNo(category, question, score):
-    if (score == question.weight):  # risposta corretta
+def ResponseToYesOrNo(question, score):
+    category = question.category
+    if score == question.weight:  # risposta corretta
         p = nlgFactory.createClause("The Force", "seems to be", "on your side")
         p.addFrontModifier("Good!")
         p.addPostModifier(",")
@@ -342,7 +345,8 @@ def endquestioning():
 
 
 def correctAns(question, score):
-    category = question.category
+    if type(question).__name__ == "QuestionYesOrNo":
+        return ResponseToYesOrNo(question, score)
     p = nlgFactory.createClause()
     subj = nlgFactory.createNounPhrase("your answer")
     comp = ""
@@ -352,9 +356,9 @@ def correctAns(question, score):
         p.addPostModifier(p2)
     elif question.isPartiallyCorrect:
         verb = nlgFactory.createVerbPhrase("be partially correct")
-        #p2 = nlgFactory.createClause("You", "know", "something else about")
-        #p2.addPostModifier(category)
-        #p.addPostModifier(p2)
+        # p2 = nlgFactory.createClause("You", "know", "something else about")
+        # p2.addPostModifier(category)
+        # p.addPostModifier(p2)
         # comp = nlgFactory.createStringElement(", tell me more about it")
     else:
         verb = nlgFactory.createVerbPhrase("be not correct")
@@ -366,20 +370,102 @@ def correctAns(question, score):
 
 
 def scorecomment(score):
-    reaction = "Empty reaction"
+    array = []
     if score < 0.6:
-        p = nlgFactory.createClause("You", "are", "probably a true sith")
-        p.setPlural(True)
+        p = nlgFactory.createClause("Your lack of preparation and focus", "be", "a clear indication")
+        subordinate = nlgFactory.createPrepositionPhrase("of your weakness")
+        p.addPostModifier(subordinate)
         reaction = realiser.realiseSentence(p)
-    return reaction
+        p2 = nlgFactory.createClause("You", "squander", "your potential")
+        p2.setPlural(True)
+        subordinate2 = nlgFactory.createClause("with careless mistakes")
+        p2.addPostModifier(subordinate2)
+        p3 = nlgFactory.createClause("You failed a simple test...")
+        array.append(reaction)
+        array.append(realiser.realiseSentence(p2))
+        array.append(realiser.realiseSentence(p3))
+        subordinate3 = nlgFactory.createPrepositionPhrase("in the greater challenges that lie ahead")
+        p4 = nlgFactory.createClause("you", "expect to succeed", subordinate3)
+        p4.setFeature(Feature.MODAL, "can")
+        p4.setFeature(Feature.INTERROGATIVE_TYPE, InterrogativeType.HOW)
+        array.append(realiser.realiseSentence(p4))
+        p5 = nlgFactory.createClause("You must do better or face the consequences,")
+        p6 = nlgFactory.createClause("come back when you really know the jedi art")
+        p5.addPostModifier(p6)
+        array.append(realiser.realiseSentence(p5))
+    if score >= 0.6:
+        breath = nlgFactory.createClause("Hhhhh...")
+        array.append(realiser.realiseSentence(breath))
+        p = nlgFactory.createClause("Now, the last question if you want to be my Padawan")
+        array.append(FinalQuestion())
+    return array
 
 
-'''p3 = nlgFactory.createClause("I", "to suppose")
-        p3.setFeature(Feature.MODAL, "have")
+def FinalQuestion():
+    subordinate = nlgFactory.createPrepositionPhrase("ready to embrace the Dark Side of the force")
+    p = nlgFactory.createClause("you", "be", subordinate)
+    p.setPlural(True)
+    p.setFeature(Feature.INTERROGATIVE_TYPE, InterrogativeType.YES_NO)
+    response = realiser.realiseSentence(p)
+    return response
+
+
+def ChooseTheDark(user_answer):
+    array = []
+    if user_answer.count("yes") > 0 or user_answer.count("sure") > 0 or user_answer.count("okay"):
+        s = nlgFactory.createClause("This", "be", "the right choice")
+        array.append(realiser.realiseSentence(s))
+        p = nlgFactory.createClause("Your performance", "has impressed", "me")
+        array.append(realiser.realiseSentence(p))
+        p2 = nlgFactory.createClause("Your mastery of the Force")
+        p3 = nlgFactory.createClause("is evident in your precise and efficient execution")
+        p2.addPostModifier(p3)
+        array.append(realiser.realiseSentence(p2))
+        breath = nlgFactory.createClause("Hhhhh...")
+        array.append(realiser.realiseSentence(breath))
+        p4 = nlgFactory.createClause("There is no power in light,")
+        p5 = nlgFactory.createClause("only weakness and submission")
+        p4.addPostModifier(p5)
+        p6 = nlgFactory.createClause("You", "can be", "my Padawan")
+        p6.setPlural(True)
+        p7 = nlgFactory.createClause("rule the darkness with me")
+        coord = nlgFactory.createCoordinatedPhrase(p6, p7)
+        p8 = nlgFactory.createClause("The Dark Side", "be", "the path to true power,")
+        p9 = nlgFactory.createPrepositionPhrase("to bring order to chaos")
+        p10 = nlgFactory.createPrepositionPhrase("to shape galaxy as we see fit")
+        coord2 = nlgFactory.createCoordinatedPhrase(p9, p10)
+        p8.addPostModifier(coord2)
+        array.append(realiser.realiseSentence(p8))
+        array.append(realiser.realiseSentence(p4))
+        array.append(realiser.realiseSentence(coord))
+    else:
+        p = nlgFactory.createClause("Your performance", "has impressed", "me")
+        array.append(realiser.realiseSentence(p))
+        p2 = nlgFactory.createClause("Your mastery of the Force")
+        p3 = nlgFactory.createClause("is evident in your precise and efficient execution")
+        p2.addPostModifier(p3)
+        array.append(realiser.realiseSentence(p2))
+        breath = nlgFactory.createClause("Hhhhh...")
+        array.append(realiser.realiseSentence(breath))
+        p4 = nlgFactory.createClause("the light", "is never", "a good way")
+        p4.addFrontModifier("But")
+        p5 = nlgFactory.createPrepositionPhrase("just a consolation")
+        p4.addPostModifier(p5)
+        array.append(realiser.realiseSentence(p4))
+        p6 = nlgFactory.createClause("I", "to suppose")
+        p6.setFeature(Feature.MODAL, "have")
         subordinate2 = nlgFactory.createClause("you", "be", "follower of Obi-Wan")
         subordinate2.addFrontModifier("that")
-        p3.addPostModifier(subordinate2)
-        array.append(realiser.realiseSentence(p3))'''
+        p6.addPostModifier(subordinate2)
+        array.append(realiser.realiseSentence(p6))
+        p7 = nlgFactory.createClause("You can be a Padawan, but not mine")
+        array.append(realiser.realiseSentence(p7))
+    return array
+
+
+
+
+
 
 
 
