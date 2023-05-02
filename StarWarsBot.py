@@ -131,10 +131,13 @@ def main():
                 question.numberAttempt -= 1
                 counter_err += 1
         if loop:
-            print(endquestioning())
+            printStringArray(endquestioning())
         print("\n")
 
-    print(scorecomment(getQuestionsScore(questions)))
+    final_score = getQuestionsScore(questions)
+    printStringArray(scorecomment(final_score))
+    if final_score >= 0.6:
+        printStringArray(ChooseTheDark(tokenizer.tokenize(word_tokenize(input().lower()))))
 
 
 main()
