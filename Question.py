@@ -151,9 +151,6 @@ class QuestionYesOrNo(Question):
         else:
             self.elementToAsk = random.choice(difference)
 
-
-
-
     def getScore(self, response):
         self.isPartiallyCorrect = False
         if response.count("yes") > 0 or response.count("true") > 0:
