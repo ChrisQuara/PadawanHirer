@@ -461,25 +461,3 @@ def ChooseTheDark(user_answer):
         p7 = nlgFactory.createClause("You can be a Padawan, but not mine")
         array.append(realiser.realiseSentence(p7))
     return array
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

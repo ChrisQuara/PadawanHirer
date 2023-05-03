@@ -5,6 +5,12 @@ import QuestionManager
 from nltk.tokenize import MWETokenizer, word_tokenize
 from NLGFunctions import *
 
+try:
+    import nltk
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt')
+
 manager = QuestionManager.QuestionManager.instance()
 tokenizer = MWETokenizer()
 
